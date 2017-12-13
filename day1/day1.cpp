@@ -28,7 +28,6 @@ uint32_t sum_halfway_digits(std::string input) {
 
   for (size_t i = 0; i < input.size(); i++) {
     if (input[i] == input[(i + offset) % input.size()]) {
-//      printf("comparing pos %d and %d\r\n", i, (i + offset) % input.size());
       acc += input[i] - '0';
     }
   }
