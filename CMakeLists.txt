@@ -5,7 +5,7 @@ project(adventofcode2017)
 
 #set(SAVED_BUILD_TESTING ${BUILD_TESTING})
 #message("build testing is ${BUILD_TESTING}")
-#set(BUILD_TESTING OFF)
+set(BUILD_TESTING OFF)
 #message("build testing is ${BUILD_TESTING}")
 #set(BUILD_TESTING ${SAVED_BUILD_TESTING})
 
@@ -35,3 +35,4 @@ add_subdirectory(day3)
 add_subdirectory(day4)
 add_subdirectory(day5)
 add_subdirectory(day13)
+add_subdirectory(day14)
