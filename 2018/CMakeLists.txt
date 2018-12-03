@@ -26,11 +26,12 @@ endif()
 #add_subdirectory(${PROJECT_SOURCE_DIR}/lib/googletest)
 #add_subdirectory(${PROJECT_SOURCE_DIR}/lib/abseil)
 
+add_compile_options("-ggdb")
 
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/out")
 
 add_subdirectory(day1)
-#add_subdirectory(day2)
+add_subdirectory(day2)
 #add_subdirectory(day3)
 #add_subdirectory(day4)
 #add_subdirectory(day5)
