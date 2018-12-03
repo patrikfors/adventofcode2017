@@ -96,13 +96,12 @@ int main(int argc, char const *argv[]) {
 
           std::cout << "diff by one!" << std::endl;
           std::cout << "matching: ";
-          for(size_t i=0;i<strings[a].size();i++) {
-            if(strings[a][i] == strings[b][i]) {
+          for (size_t i = 0; i < strings[a].size(); i++) {
+            if (strings[a][i] == strings[b][i]) {
               std::cout << strings[a][i];
             }
           }
           std::cout << std::endl;
-
         }
       }
     }
