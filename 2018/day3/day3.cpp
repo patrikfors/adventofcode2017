@@ -67,7 +67,6 @@ int main(int argc, char const *argv[]) {
     int32_t cloth[1000][1000];
     memset(cloth, 0, sizeof(int32_t) * 1000 * 1000);
 
-
     using id_area_t = std::pair<int32_t, int32_t>; // id, area
 
     std::vector<id_area_t> ids;
@@ -80,7 +79,7 @@ int main(int argc, char const *argv[]) {
         int32_t width = std::stoi(matches[4].str());
         int32_t height = std::stoi(matches[5].str());
 
-        ids.push_back(id_area_t(id, width*height));
+        ids.push_back(id_area_t(id, width * height));
 
         for (int32_t x = left; x < (left + width); x++) {
           for (int32_t y = top; y < (top + height); y++) {
@@ -97,37 +96,36 @@ int main(int argc, char const *argv[]) {
       }
     }
 
-/*
-    int32_t c = 0;
-    for (int32_t x = 0; x < 1000; x++) {
-      for (int32_t y = 0; y < 1000; y++) {
-        if (cloth[x][y] < 0) {
-          c++;
+    /*
+        int32_t c = 0;
+        for (int32_t x = 0; x < 1000; x++) {
+          for (int32_t y = 0; y < 1000; y++) {
+            if (cloth[x][y] < 0) {
+              c++;
+            }
+          }
         }
-      }
-    }
-*/
+    */
 
-
-    for(auto foo : ids) {
+    for (auto foo : ids) {
       int32_t id = foo.first;
       int32_t area = foo.second;
 
       int32_t count = 0;
       for (int32_t x = 0; x < 1000; x++) {
         for (int32_t y = 0; y < 1000; y++) {
-          if(cloth[x][y] == id) {
+          if (cloth[x][y] == id) {
             count++;
           }
         }
       }
-    
+
       if (count == area) {
         std::cout << "id " << id << " is untouched by others!" << std::endl;
       }
     }
 
-    //std::cout << c << " square inches overclaimed!" << std::endl;
+    // std::cout << c << " square inches overclaimed!" << std::endl;
 
     exit(0);
   } else {
