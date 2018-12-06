@@ -33,8 +33,6 @@ static bool point_compare_y(point_t a, point_t b)
   return a.y < b.y;
 } 
 
-
-
 std::vector<point_t> parse_input(std::vector<std::string> const input) {
   static std::regex point_pattern("^(\\d+), (\\d+)",
                                   std::regex_constants::ECMAScript);
@@ -60,6 +58,17 @@ std::vector<point_t> parse_input(std::vector<std::string> const input) {
 
 int32_t manhattan_distance(int32_t x1, int32_t y1, int32_t x2, int32_t y2) {
   return std::abs(x1 - x2) + std::abs(y1 - y2);
+}
+
+int32_t sum_of_distances(int32_t x, int32_t y, points_t points)
+{
+  int32_t sum = 0;
+
+  for(point_t point : points) {
+    sum += manhattan_distance(x, y, point.x, point.y);
+  }
+
+  return sum;
 }
 
 size_t find_closest_index(int32_t x, int32_t y, std::vector<point_t> points) {
@@ -95,18 +104,17 @@ int main(int argc, char const *argv[]) {
 
   std::vector<point_t> points = parse_input(input);
 
+  // find min/max x & y..
+  points_t::iterator result = std::min_element(points.begin(), points.end(), point_compare_x);
+  std::int32_t minx = result->x;
+  result = std::max_element(points.begin(), points.end(), point_compare_x);
+  std::int32_t maxx = result->x;
+  result = std::min_element(points.begin(), points.end(), point_compare_y);
+  std::int32_t miny = result->y;
+  result = std::max_element(points.begin(), points.end(), point_compare_y);
+  std::int32_t maxy = result->y;
+
   if (args[1] == "1") {
-
-    // find min/max x & y..
-    points_t::iterator result = std::min_element(points.begin(), points.end(), point_compare_x);
-    std::int32_t minx = result->x;
-    result = std::max_element(points.begin(), points.end(), point_compare_x);
-    std::int32_t maxx = result->x;
-    result = std::min_element(points.begin(), points.end(), point_compare_y);
-    std::int32_t miny = result->y;
-    result = std::max_element(points.begin(), points.end(), point_compare_y);
-    std::int32_t maxy = result->y;
-
     std::set<size_t> ignore_indices;
 
     for (int32_t x = minx - 10; x < maxx + 10; x++) {
@@ -176,6 +184,18 @@ int main(int argc, char const *argv[]) {
     std::cout << "Largest area is " << *largest_area << std::endl;
 
   } else if (args[1] == "2") {
+    int32_t size = 0;
+    for (int32_t x = minx - 10; x < maxx + 10; x++) {
+      for (int32_t y = miny - 10; y < maxy + 10; y++) {
+        int32_t distances = sum_of_distances(x, y, points);
+
+        if (distances < 10000) {
+//          std::cout << "(" << x << ", " << y << ") is included." << std::endl;
+          size++;
+        }
+      }
+    }
+    std::cout << "Size of region: " << size << std::endl;
   } else {
     std::cout << "really not implemented yet" << std::endl;
     exit(2);
