@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+for i in {1000..2000..10}
+  do
+    if [ ! -e output$i ]; then
+      ./out/day6 1 $i < ../day6/input6.txt > output$i
+    fi
+    clear
+    cat output$i | sort -n
+  done

@@ -3,6 +3,17 @@
 #include <regex>
 #include <vector>
 
+std::vector<std::string> read_input() {
+  std::vector<std::string> rval;
+
+  std::string line;
+  while (std::getline(std::cin, line)) {
+    rval.emplace_back(line);
+  }
+
+  return rval;
+}
+
 int main(int argc, char const *argv[]) {
   std::vector<std::string> args(argv, argv + argc);
 
