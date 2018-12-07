@@ -1,6 +1,8 @@
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <regex>
+#include <set>
 #include <vector>
 
 std::vector<std::string> read_input() {
@@ -61,8 +63,12 @@ int main(int argc, char const *argv[]) {
     arg_fail = true;
   }
 
+  if((args[1] == "2") && args.size() < 4) {
+    arg_fail = true;
+  }
+
   if (arg_fail) {
-    std::cout << "Usage: " << args[0] << " [1|2]" << std::endl;
+    std::cout << "Usage: " << args[0] << " [1|2 <workers> <work_time>]" << std::endl;
     exit(EXIT_FAILURE);
   }
 
@@ -102,6 +108,87 @@ int main(int argc, char const *argv[]) {
       std::cout << "Execution order: " << result << std::endl;
     }
   } else if (args[1] == "2") {
+    int workers = std::stoi(args[2]);
+    int work_time = std::stoi(args[3]);
+    std::string result;
+    int work_left[26];
+
+    for(int i=0;i<26;i++) {
+      //work_left[i] = i + 1;
+      work_left[i] = work_time + i + 1;
+    }
+
+    int second = 0;
+
+    std::set<char> started_work; // looks like we have to finish started work first;
+    bool print=true;
+    while (steps.size()) {
+      std::cout << std::endl;
+      std::cout << "second " << second++ << ":" << std::endl;
+
+      std::string available_steps;
+      int available_workers = workers;
+
+      if (print) {
+        for (auto it = steps.begin(); it != steps.end(); ++it) {
+          std::cout << "[" << std::setw(3) << work_left[(it->first-'A')] << "]" << it->first << ": " << it->second << std::endl;
+        }
+        print = false;
+      }
+
+      for (auto it = steps.begin(); it != steps.end(); ++it) {
+        // see if step (= it->first) is ready to work on
+        bool ready_to_work_on = true;
+        for (char c : it->second) {
+          if (steps.count(c)) {
+            ready_to_work_on = false;
+            break;
+          }
+        }
+
+        if(ready_to_work_on) {
+          available_steps += it->first;
+        }
+      }
+
+      std::cout << "Available steps: " << available_steps << std::endl;
+
+      if(started_work.size()) {
+        // continue started work
+          for(char c : started_work) {
+            std::cout << "Worker " << (1+workers-available_workers) << " continues works 1 second on step " << c << std::endl;
+            available_workers--;
+            work_left[c-'A']--;
+          }
+      } 
+      // ready to work 1 second
+      for(char c : available_steps) {
+        if (started_work.count(c)) {
+          continue;
+        }
+        if(available_workers) {
+          started_work.insert(c);
+          std::cout << "Worker " << (1+workers-available_workers) << " works 1 second on step " << c << std::endl;
+          available_workers--;
+          work_left[c-'A']--;
+        }
+      }
+
+
+      // remove finished work
+      for(int i=0;i<26;i++) {
+        if(work_left[i] == 0) {
+          print = true;
+          char c = 'A' + i;
+          started_work.erase(c);
+          std::cout << "Removing finished work " << c << std::endl;
+          work_left[i] = -1; // mark it as removed
+          steps.erase(c);
+        }
+      }
+
+    }
+   std::cout << "Time required: " << second << std::endl;
   } else {
     std::cout << "really not implemented yet" << std::endl;
     exit(2);
