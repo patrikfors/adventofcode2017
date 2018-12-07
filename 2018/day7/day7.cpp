@@ -1,0 +1,111 @@
+#include <fstream>
+#include <iostream>
+#include <regex>
+#include <vector>
+
+std::vector<std::string> read_input() {
+  std::vector<std::string> rval;
+
+  std::string line;
+  while (std::getline(std::cin, line)) {
+    rval.emplace_back(line);
+  }
+
+  return rval;
+}
+
+using steps_t = std::map<char, std::string>;
+
+steps_t parse_input(std::vector<std::string> const input) {
+  static std::regex step_pattern(
+      "^Step ([A-Z]) must be finished before step ([A-Z]) can begin\\.",
+      std::regex_constants::ECMAScript);
+
+  steps_t rval;
+
+  for (std::string const step_text : input) {
+    std::smatch matches;
+    if (std::regex_search(step_text, matches, step_pattern)) {
+      char requirement = matches[1].str()[0];
+      char step = matches[2].str()[0];
+
+      if (rval.count(step)) {
+        std::string requirements = rval[step] + requirement;
+        std::sort(requirements.begin(), requirements.end());
+        rval[step] = requirements;
+      } else {
+        std::string requirements = std::string() + requirement;
+        rval.emplace(step, requirements);
+      }
+
+      // also add the requirement as a step if it doesnt exist already
+      if (!rval.count(requirement)) {
+        rval.emplace(requirement, std::string());
+      }
+    } else {
+      std::cerr << "Failed to parse step text \"" << step_text << "\"."
+                << std::endl;
+      exit(1);
+    }
+  }
+
+  return rval;
+}
+
+int main(int argc, char const *argv[]) {
+  std::vector<std::string> args(argv, argv + argc);
+
+  bool arg_fail = false;
+
+  if (args.size() < 2 || (args[1] != "1" && args[1] != "2")) {
+    arg_fail = true;
+  }
+
+  if (arg_fail) {
+    std::cout << "Usage: " << args[0] << " [1|2]" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
+  std::vector<std::string> input = read_input();
+  steps_t steps = parse_input(input);
+
+  if (args[1] == "1") {
+    std::string result;
+
+    while (steps.size()) {
+      std::cout << std::endl;
+      std::string finished_steps;
+      std::cout << "loop:" << std::endl;
+
+      for (auto it = steps.begin(); it != steps.end(); ++it) {
+        std::cout << it->first << ": " << it->second << std::endl;
+      }
+
+      for (auto it = steps.begin(); it != steps.end(); ++it) {
+        bool finished = true;
+        for (char c : it->second) {
+          if (steps.count(c)) {
+            finished = false;
+            break;
+          }
+        }
+
+        if (finished) {
+          char c = it->first;
+          steps.erase(c);
+
+          result += c;
+          break;
+        }
+      }
+
+      std::cout << "Execution order: " << result << std::endl;
+    }
+  } else if (args[1] == "2") {
+  } else {
+    std::cout << "really not implemented yet" << std::endl;
+    exit(2);
+  }
+
+  exit(0);
+}
