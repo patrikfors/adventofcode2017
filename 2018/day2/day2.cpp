@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <vector>
 
 std::pair<std::uint32_t, std::uint32_t> count_two_and_three(std::string str) {
