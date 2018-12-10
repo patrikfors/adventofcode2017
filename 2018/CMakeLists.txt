@@ -31,6 +31,8 @@ add_compile_options("-Wall")
 
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/out")
 
+add_subdirectory(external/fmt)
+
 add_subdirectory(day1)
 add_subdirectory(day2)
 add_subdirectory(day3)

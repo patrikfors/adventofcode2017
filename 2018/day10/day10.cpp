@@ -4,6 +4,8 @@
 #include <regex>
 #include <vector>
 
+#include <fmt/core.h>
+
 bool verbose = true;
 
 std::vector<std::string> read_input() {
@@ -16,8 +18,8 @@ std::vector<std::string> read_input() {
     lines_read++;
   }
 
-  if(verbose) {
-    std::cout << "Read " << lines_read << " lines from stdin." << std::endl;
+  if (verbose) {
+    fmt::print("Read {} lines from stdin.\n", lines_read);
   }
 
   return rval;
@@ -62,8 +64,9 @@ std::vector<data_t> parse_input(std::vector<std::string> const &input) {
     }
 
     else {
-      std::cerr << "Failed to match input string \"" << s
-                << "\" with pattern \"" << pattern_string << "\"." << std::endl;
+      fmt::print(stderr,
+                "Failed to match input string \"{}\" with pattern \"{}\".\n", s,
+                pattern_string);
       exit(1);
     }
   }
@@ -88,9 +91,9 @@ int main(int argc, char const *argv[]) {
   if (args[1] == "1") {
     std::vector<std::string> input = read_input();
     std::vector<data_t> data = parse_input(input);
-    for(data_t d : data) {
-      std::cout << "(" << std::setw(6) << d.point.x << ", " << std::setw(6) << d.point.y << "):" << 
-      "(" << std::setw(6) << d.v.x << ", " << std::setw(6) << d.v.y << ")." << std::endl;
+    for (data_t d : data) {
+      fmt::print("({:6},{:6}): ({:2}, {:2}).\n", d.point.x, d.point.y, d.v.x,
+                d.v.y);
     }
   } else if (args[1] == "2") {
   } else {
