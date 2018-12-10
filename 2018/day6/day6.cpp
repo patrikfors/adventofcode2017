@@ -138,7 +138,7 @@ int main(int argc, char const *argv[]) {
     std::vector<int32_t> areas(points.size(), 0);
     for (int32_t y = 0; y < maxy; y++) {
       for (int32_t x = 0; x < maxx; x++) {
-        size_t min = INT32_MAX;
+        int32_t min = INT32_MAX;
         size_t min_p = INT32_MAX;
         bool dup = false;
 

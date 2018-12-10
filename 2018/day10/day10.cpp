@@ -6,8 +6,17 @@
 #include <vector>
 
 #include <fmt/core.h>
+#include <gflags/gflags.h>
 
-bool verbose = true;
+DEFINE_bool(v, false, "Be verbose");
+DEFINE_int32(part, 1, "Problem part");
+
+static bool part_validator(char const *flagname, int32_t value)
+{
+  return (value == 1 || value == 2);
+}
+
+DEFINE_validator(part, &part_validator);
 
 std::vector<std::string> read_input(std::istream &in) {
   std::vector<std::string> rval;
@@ -19,7 +28,7 @@ std::vector<std::string> read_input(std::istream &in) {
     lines_read++;
   }
 
-  if (verbose) {
+  if (FLAGS_v) {
     fmt::print("Read {} lines.\n", lines_read);
   }
 
@@ -76,27 +85,27 @@ std::vector<data_t> parse_input(std::vector<std::string> const &input) {
   return rval;
 }
 
-int main(int argc, char const *argv[]) {
+int main(int argc, char *argv[]) {
+  gflags::SetUsageMessage("[-v] -part <1|2> <input file>");
+  gflags::ParseCommandLineFlags(&argc, &argv, true);
+
+  // positional arguments
   std::vector<std::string> args(argv, argv + argc);
 
   std::ios_base::sync_with_stdio(false);
   bool arg_fail = false;
 
-  if (args.size() < 3 || (args[1] != "1" && args[1] != "2")) {
-    arg_fail = true;
+  if(args.size() < 2) {
+    std::cout << "Usage: " << gflags::ProgramInvocationShortName() << " " << gflags::ProgramUsage() << std::endl;
+    exit(1);
   }
 
-  if (arg_fail) {
-    std::cout << "Usage: " << args[0] << " [1|2] <input file>" << std::endl;
-    exit(EXIT_FAILURE);
-  }
-
-  if (args[1] == "1") {
-    std::ifstream file(args[2], std::ifstream::in);
+  if (FLAGS_part == 1) {
+    std::ifstream file(args[1], std::ifstream::in);
     std::vector<std::string> input = read_input(file);
     std::vector<data_t> data = parse_input(input);
 
-    if (verbose) {
+    if (FLAGS_v) {
       for (data_t d : data) {
         fmt::print("({:6},{:6}): ({:2}, {:2}).\n", d.point.x, d.point.y, d.v.x,
                    d.v.y);
@@ -107,62 +116,90 @@ int main(int argc, char const *argv[]) {
     int32_t height = 50;
 
     char view[width][height];
-    
-    bool once_visible = false;
-    bool all_clear = false;
 
     for (uint32_t second = 1;; second++) {
-      static const int32_t scale = 1;
-      static const int32_t offset = 120;
-
-      fmt::print("Second {}:\n", second);
-
       memset(view, 0, width * height * sizeof(char));
 
-      all_clear=true;
+      int32_t x_offset = INT32_MAX;
+      int32_t y_offset = INT32_MAX;
 
       // update data points
-      for (size_t i=0;i<data.size();i++) {
+      for (size_t i = 0; i < data.size(); i++) {
         data_t d = data[i];
         d.point.x += d.v.x;
         d.point.y += d.v.y;
 
         data[i] = d;
+      }
 
-        if (d.point.x >= (offset+0) && d.point.x < (offset+scale*width) && d.point.y >= (offset+0) &&
-            d.point.y < (offset+scale*height)) {
-          view[d.point.x/scale-offset][d.point.y/scale-offset]++;
-          all_clear = false;
-          once_visible = true;
+      bool is_aligned = true;
+      // aligned is defined as every point next to another..
+      for (size_t fst = 0; fst < data.size(); fst++) {
+        bool neighbour_found = false;
+
+        for (size_t snd = 0; snd < data.size(); snd++) {
+          if(snd==fst) {
+            continue;
+          }
+
+          int32_t x_dist = abs(data[fst].point.x - data[snd].point.x);
+          int32_t y_dist = abs(data[fst].point.y - data[snd].point.y);
+
+          if (x_dist <= 1 && y_dist <= 1) {
+            neighbour_found = true;
+          }
+        }
+
+        if (!neighbour_found) {
+          is_aligned = false;
+          break;
+        }
+
+        if (abs(data[fst].point.x) < x_offset) {
+          x_offset = data[fst].point.x;
+        }
+
+        if (abs(data[fst].point.y) < y_offset) {
+          y_offset = data[fst].point.y;
         }
       }
 
-      if(once_visible && all_clear) {
-        fmt::print("No visible points.\n");
-//        exit(0);
-      }
+      if (is_aligned) {
+        fmt::print("Second {}:\n", second);
+        x_offset = -x_offset;
+        y_offset = -y_offset;
 
-      if(!all_clear) {
+        memset(view, 0, width * height * sizeof(char));
+        for (size_t fst = 0; fst < data.size(); fst++) {
+          int32_t x = data[fst].point.x + x_offset;
+          int32_t y = data[fst].point.y + y_offset;
+
+          if (x >= 0 && x < width && y >= 0 && y < height) {
+            view[x][y] = '#';
+          }
+        }
+
         // print
         for (int32_t h = 0; h < height; h++) {
           for (int32_t w = 0; w < width; w++) {
-            if(!view[w][h])
+            if (!view[w][h])
               fmt::print(" ");
-            else
-              fmt::print("{}", (char) ('a'+view[w][h]));
+            else {
+              fmt::print("{}", view[w][h]);
+            }
           }
 
           fmt::print("\n");
         }
         fmt::print("\n");
 
-        std::string dummy;
-
-        std::cout << "Press Enter to continue.";
+        std::cout << "Press Enter to continue." << std::flush; 
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        exit(0);
       }
     }
-  } else if (args[1] == "2") {
+  } else if (FLAGS_part == 2) {
+    std::cout << "not implemented yet" << std::endl;
   } else {
     std::cout << "really not implemented yet" << std::endl;
     exit(2);

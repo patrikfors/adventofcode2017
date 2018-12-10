@@ -30,7 +30,6 @@ int main(int argc, char const *argv[]) {
 
     while (std::getline(std::cin, line)) {
       if (std::regex_search(line, matches, pattern)) {
-        int32_t id = std::stoi(matches[1].str());
         int32_t left = std::stoi(matches[2].str());
         int32_t top = std::stoi(matches[3].str());
         int32_t width = std::stoi(matches[4].str());

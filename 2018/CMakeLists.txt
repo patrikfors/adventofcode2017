@@ -28,10 +28,12 @@ endif()
 
 #add_compile_options("-ggdb -Wall")
 add_compile_options("-Wall")
+add_compile_options("-g")
 
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/out")
 
 add_subdirectory(external/fmt)
+add_subdirectory(external/gflags)
 
 add_subdirectory(day1)
 add_subdirectory(day2)

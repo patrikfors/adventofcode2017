@@ -89,8 +89,8 @@ int main(int argc, char const *argv[]) {
       strings.emplace_back(line);
     }
 
-    for (int a = 0; a < strings.size(); a++) {
-      for (int b = a + 1; b < strings.size(); b++) {
+    for (size_t a = 0; a < strings.size(); a++) {
+      for (size_t b = a + 1; b < strings.size(); b++) {
         if (diff_by_one(strings[a], strings[b])) {
           std::cout << "a: " << strings[a] << std::endl;
           std::cout << "b: " << strings[b] << std::endl;

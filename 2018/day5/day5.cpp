@@ -60,7 +60,7 @@ int main(int argc, char const *argv[]) {
     std::string org;
     std::getline(std::cin, org);
 
-    int smallest = 9999999;
+    size_t smallest = 9999999;
     char smallest_c = 0;
 
     for(char c = 'a';c <= 'z'; c++) {

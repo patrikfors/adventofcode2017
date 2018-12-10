@@ -7,3 +7,6 @@
 [submodule "lib/googletest"]
 	path = 2017/lib/googletest
 	url = https://github.com/google/googletest
+[submodule "2018/external/gflags"]
+	path = 2018/external/gflags
+	url = https://github.com/gflags/gflags.git
