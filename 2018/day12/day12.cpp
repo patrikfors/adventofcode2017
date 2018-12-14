@@ -13,6 +13,7 @@ DEFINE_int32(part, 0, "Problem part");
 DEFINE_string(f, "", "Input data");
 
 static bool part_validator(char const *flagname, int32_t value) {
+  (void)flagname;
   return (value > 0);
 }
 

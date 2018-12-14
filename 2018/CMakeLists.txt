@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(adventofcode2018)
+cmake_policy(SET CMP0048 NEW)
+project(adventofcode2018 VERSION 1.0.0.0)
 
 
 #set(SAVED_BUILD_TESTING ${BUILD_TESTING})
@@ -47,3 +48,4 @@ add_subdirectory(external/gflags)
 #add_subdirectory(day10)
 #add_subdirectory(day11)
 add_subdirectory(day12)
+add_subdirectory(day13)
