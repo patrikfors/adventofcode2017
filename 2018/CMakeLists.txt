@@ -19,8 +19,10 @@ if (MSVC)
 # /wd4244  conversion from 'type1' to 'type2'
 # /wd4267  conversion from 'size_t' to 'type2'
 # /wd4800  force value to bool 'true' or 'false' (performance warning)
-add_compile_options(/wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
-add_definitions(/DNOMINMAX /DWIN32_LEAN_AND_MEAN=1 /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS)
+	add_compile_options(/wd4005 /wd4068 /wd4244 /wd4267 /wd4800)
+	add_definitions(/DNOMINMAX /DWIN32_LEAN_AND_MEAN=1 /D_CRT_SECURE_NO_WARNINGS /D_SCL_SECURE_NO_WARNINGS)
+else()
+	add_compile_options("-g")
 endif()
 
 #add_subdirectory(${PROJECT_SOURCE_DIR}/lib/cctz)
@@ -29,7 +31,7 @@ endif()
 
 #add_compile_options("-ggdb -Wall")
 add_compile_options("-Wall")
-add_compile_options("-g")
+
 
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/out")
 
@@ -49,4 +51,5 @@ add_subdirectory(external/gflags)
 #add_subdirectory(day11)
 #add_subdirectory(day12)
 #add_subdirectory(day13)
-add_subdirectory(day14)
+#add_subdirectory(day14)
+add_subdirectory(day15)
